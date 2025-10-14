@@ -3,7 +3,7 @@
 Sistema web para gerenciamento de livraria com Spring Boot.
 
 ## Tecnologias
-- Java 21 | Spring Boot 3.5.6 | PostgreSQL | Thymeleaf | Spring Security | Lombok
+- Java 21 | Spring Boot 3.5.6 | PostgreSQL | Spring Security | Lombok
 
 ## Executar
 
