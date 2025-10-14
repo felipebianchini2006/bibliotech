@@ -1,10 +1,11 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Bibliotech</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -19,30 +20,36 @@
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            max-width: 400px;
             width: 100%;
+            max-width: 400px;
             padding: 40px;
         }
         .logo { text-align: center; margin-bottom: 30px; }
         .logo h2 { color: #333; font-weight: 600; font-size: 24px; }
         .logo p { color: #999; font-size: 14px; margin-top: 5px; }
-        .form-label { color: #555; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
-        .form-control {
+        .form-group { margin-bottom: 20px; }
+        label { color: #555; font-size: 14px; font-weight: 500; display: block; margin-bottom: 6px; }
+        input[type="email"], input[type="password"], input[type="text"] {
+            width: 100%;
             border: 1px solid #ddd;
             border-radius: 6px;
             padding: 10px 12px;
             font-size: 14px;
         }
-        .form-control:focus {
+        input:focus {
             border-color: #333;
             box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+            outline: none;
         }
         .btn-primary {
+            width: 100%;
             background: #333;
             border: none;
             border-radius: 6px;
             padding: 12px;
+            color: white;
             font-weight: 500;
+            cursor: pointer;
             transition: all 0.2s;
         }
         .btn-primary:hover { background: #000; }
@@ -54,58 +61,58 @@
         }
         .link { color: #333; text-decoration: none; font-size: 14px; }
         .link:hover { text-decoration: underline; }
-        .alert { 
-            border-radius: 6px; 
-            font-size: 14px; 
+        .alert {
             padding: 12px;
-            border: none;
-        }
-        .test-creds {
-            background: #f8f9fa;
             border-radius: 6px;
-            padding: 15px;
-            margin-top: 20px;
-            font-size: 13px;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
-        .test-creds small { color: #666; }
+        .alert-danger { background: #fee; color: #c33; border: 1px solid #fcc; }
+        .alert-success { background: #efe; color: #3c3; border: 1px solid #cfc; }
     </style>
 </head>
 <body>
     <div class="login-card">
         <div class="logo">
             <h2>📚 Bibliotech</h2>
-            <p>Sistema de Livraria</p>
+            <p>Sistema de Gerenciamento de Biblioteca</p>
         </div>
-        <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
-        <div th:if="${mensagem}" class="alert alert-success" th:text="${mensagem}"></div>
 
-        <form th:action="@{/login}" method="post">
-            <div class="mb-3">
-                <label for="username" class="form-label">Email</label>
-                <input type="email" class="form-control" id="username" name="username" 
-                       placeholder="seu@email.com" required autofocus>
+        <c:if test="${param.error != null}">
+            <div class="alert alert-danger">
+                Email ou senha inválidos
             </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Senha</label>
-                <input type="password" class="form-control" id="password" name="password" 
-                       placeholder="••••••••" required>
+        </c:if>
+
+        <c:if test="${param.logout != null}">
+            <div class="alert alert-success">
+                Logout realizado com sucesso!
             </div>
-            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+        </c:if>
+
+        <form action="${pageContext.request.contextPath}/perform-login" method="post">
+            <div class="form-group">
+                <label for="username">Email</label>
+                <input type="text" id="username" name="username" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <c:if test="${not empty _csrf}">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </c:if>
+
+            <button type="submit" class="btn-primary">Entrar</button>
         </form>
 
         <div class="divider">ou</div>
-        
-        <div class="text-center">
-            <a th:href="@{/registro}" class="link">Criar nova conta</a>
-        </div>
 
-        <div class="test-creds">
-            <small>
-                <strong>Teste:</strong> admin@bibliotech.com / admin123
-            </small>
+        <div style="text-align: center;">
+            <a href="${pageContext.request.contextPath}/registro" class="link">Criar nova conta →</a>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

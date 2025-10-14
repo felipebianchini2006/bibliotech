@@ -1,10 +1,11 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acesso Negado - Bibliotech</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -48,7 +49,7 @@
             text-decoration: none;
             display: inline-block;
         }
-        .btn-primary:hover { background: #000; color: white; }
+        .btn-primary:hover { background: #000; }
     </style>
 </head>
 <body>
@@ -56,7 +57,7 @@
         <div class="error-icon">🚫</div>
         <h1>Acesso Negado</h1>
         <p>Você não tem permissão para acessar esta página.</p>
-        <a th:href="@{/home}" class="btn-primary">Voltar para Home</a>
+        <a href="${pageContext.request.contextPath}/home" class="btn-primary">Voltar para Home</a>
     </div>
 </body>
 </html>

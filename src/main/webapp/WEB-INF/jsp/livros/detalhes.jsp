@@ -1,10 +1,12 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes do Livro - Bibliotech</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -16,8 +18,13 @@
             border-bottom: 1px solid #eee;
             padding: 15px 0;
         }
+        .navbar-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
         .navbar-brand { color: #333; font-weight: 600; font-size: 18px; text-decoration: none; }
-        .container { max-width: 900px; padding: 30px 15px; }
+        .container { max-width: 900px; padding: 30px 15px; margin: 0 auto; }
         .card {
             background: white;
             border: 1px solid #eee;
@@ -72,7 +79,10 @@
             border-radius: 4px;
             font-size: 13px;
             font-weight: 500;
+            margin-left: 10px;
         }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
         .description {
             margin-top: 30px;
             padding-top: 30px;
@@ -114,13 +124,13 @@
             color: white;
             text-decoration: none;
         }
-        .btn-edit:hover { background: #000; color: white; }
+        .btn-edit:hover { background: #000; }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="container">
-            <a class="navbar-brand" th:href="@{/home}">📚 Bibliotech</a>
+        <div class="navbar-content">
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/home">📚 Bibliotech</a>
         </div>
     </nav>
 
@@ -128,69 +138,82 @@
         <div class="card">
             <div class="book-header">
                 <div class="book-cover">
-                    <img th:if="${livro.imagemUrl}" th:src="${livro.imagemUrl}" alt="Capa">
-                    <span th:unless="${livro.imagemUrl}">📖</span>
+                    <c:choose>
+                        <c:when test="${livro.imagemUrl != null && !livro.imagemUrl.isEmpty()}">
+                            <img src="${livro.imagemUrl}" alt="Capa">
+                        </c:when>
+                        <c:otherwise>
+                            <span>📖</span>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
                 <div class="book-info">
-                    <h1 th:text="${livro.titulo}"></h1>
+                    <h1>${livro.titulo}</h1>
                     
                     <div class="info-row">
                         <div class="info-label">ISBN</div>
-                        <div class="info-value" th:text="${livro.isbn}"></div>
+                        <div class="info-value">${livro.isbn}</div>
                     </div>
 
                     <div class="info-row">
                         <div class="info-label">Categoria</div>
                         <div class="info-value">
-                            <span th:if="${livro.categoria}" 
-                                  class="badge bg-light text-dark" 
-                                  th:text="${livro.categoria.nome}"></span>
-                            <span th:unless="${livro.categoria}">-</span>
+                            <c:choose>
+                                <c:when test="${livro.categoria != null}">
+                                    ${livro.categoria.nome}
+                                </c:when>
+                                <c:otherwise>-</c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
 
                     <div class="info-row">
                         <div class="info-label">Publicação</div>
-                        <div class="info-value" 
-                             th:text="${#temporals.format(livro.dataPublicacao, 'dd/MM/yyyy')}"></div>
+                        <div class="info-value">
+                            <fmt:formatDate value="${livro.dataPublicacao}" pattern="dd/MM/yyyy"/>
+                        </div>
                     </div>
 
                     <div class="info-row">
                         <div class="info-label">Estoque</div>
                         <div class="info-value">
-                            <span th:text="${livro.quantidadeDisponivel}"></span> / 
-                            <span th:text="${livro.quantidadeTotal}"></span>
-                            <span th:if="${livro.quantidadeDisponivel == 0}" 
-                                  class="badge bg-danger text-white ms-2">Esgotado</span>
-                            <span th:if="${livro.quantidadeDisponivel > 0}" 
-                                  class="badge bg-success text-white ms-2">Disponível</span>
+                            ${livro.quantidadeDisponivel} / ${livro.quantidadeTotal}
+                            <c:choose>
+                                <c:when test="${livro.quantidadeDisponivel == 0}">
+                                    <span class="badge badge-danger">Esgotado</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="badge badge-success">Disponível</span>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
 
-                    <div th:if="${!livro.autores.empty}" class="info-row">
-                        <div class="info-label">Autores</div>
-                        <div class="info-value">
-                            <span th:each="autor, iterStat : ${livro.autores}">
-                                <span th:text="${autor.nome}"></span>
-                                <span th:if="${!iterStat.last}">, </span>
-                            </span>
+                    <c:if test="${livro.autores != null && !livro.autores.isEmpty()}">
+                        <div class="info-row">
+                            <div class="info-label">Autores</div>
+                            <div class="info-value">
+                                <c:forEach items="${livro.autores}" var="autor" varStatus="status">
+                                    ${autor.nome}<c:if test="${!status.last}">, </c:if>
+                                </c:forEach>
+                            </div>
                         </div>
-                    </div>
+                    </c:if>
                 </div>
             </div>
 
-            <div th:if="${livro.descricao}" class="description">
-                <div class="description-label">Descrição</div>
-                <div class="description-text" th:text="${livro.descricao}"></div>
-            </div>
+            <c:if test="${livro.descricao != null && !livro.descricao.isEmpty()}">
+                <div class="description">
+                    <div class="description-label">Descrição</div>
+                    <div class="description-text">${livro.descricao}</div>
+                </div>
+            </c:if>
 
             <div class="actions">
-                <a th:href="@{/livros}" class="btn-back">← Voltar</a>
-                <a th:href="@{/livros/{id}/editar(id=${livro.id})}" class="btn-edit">Editar</a>
+                <a href="${pageContext.request.contextPath}/livros" class="btn-back">← Voltar</a>
+                <a href="${pageContext.request.contextPath}/livros/${livro.id}/editar" class="btn-edit">Editar</a>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
