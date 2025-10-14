@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${livro.id != null ? 'Editar Livro' : 'Novo Livro'}">Livro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #fafafa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .navbar-brand { color: #333; font-weight: 600; font-size: 18px; text-decoration: none; }
+        .container { max-width: 700px; padding: 30px 15px; }
+        h2 { color: #333; font-size: 24px; font-weight: 600; margin-bottom: 30px; }
+        .card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 30px;
+        }
+        .form-label { color: #555; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+        .form-control, .form-select, textarea {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 14px;
+        }
+        .form-control:focus, .form-select:focus, textarea:focus {
+            border-color: #333;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+            outline: none;
+        }
+        .btn-back { 
+            background: none; 
+            border: 1px solid #ddd; 
+            color: #666; 
+            padding: 10px 20px; 
+            border-radius: 6px; 
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .btn-back:hover { border-color: #333; color: #333; }
+        .btn-primary {
+            background: #333;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: white;
+        }
+        .btn-primary:hover { background: #000; }
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .alert { 
+            border: none; 
+            border-radius: 6px; 
+            padding: 12px; 
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        small { color: #999; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/home}">📚 Bibliotech</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 th:text="${livro.id != null ? 'Editar Livro' : 'Novo Livro'}"></h2>
+
+        <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
+
+        <div class="card">
+            <form th:action="${livro.id != null ? '/livros/' + livro.id : '/livros'}" 
+                  th:object="${livro}" method="post">
+                
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label for="titulo" class="form-label">Título *</label>
+                        <input type="text" class="form-control" id="titulo" 
+                               th:field="*{titulo}" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="isbn" class="form-label">ISBN *</label>
+                        <input type="text" class="form-control" id="isbn" 
+                               th:field="*{isbn}" maxlength="13" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="dataPublicacao" class="form-label">Data de Publicação *</label>
+                        <input type="date" class="form-control" id="dataPublicacao" 
+                               th:field="*{dataPublicacao}" required>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <label for="descricao" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="descricao" 
+                                  th:field="*{descricao}" rows="3"></textarea>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="categoria" class="form-label">Categoria</label>
+                        <select class="form-select" id="categoria" th:field="*{categoria}">
+                            <option value="">Selecione...</option>
+                            <option th:each="cat : ${categorias}" 
+                                    th:value="${cat.id}" 
+                                    th:text="${cat.nome}"></option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="quantidadeTotal" class="form-label">Quantidade *</label>
+                        <input type="number" class="form-control" id="quantidadeTotal" 
+                               th:field="*{quantidadeTotal}" min="1" required>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="quantidadeDisponivel" class="form-label">Disponível *</label>
+                        <input type="number" class="form-control" id="quantidadeDisponivel" 
+                               th:field="*{quantidadeDisponivel}" min="0" required>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <label for="autores" class="form-label">Autores</label>
+                        <select class="form-select" id="autores" th:field="*{autores}" multiple size="4">
+                            <option th:each="autor : ${autores}" 
+                                    th:value="${autor.id}" 
+                                    th:text="${autor.nome}"></option>
+                        </select>
+                        <small>Ctrl + clique para múltiplos</small>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <label for="imagemUrl" class="form-label">URL da Imagem</label>
+                        <input type="url" class="form-control" id="imagemUrl" 
+                               th:field="*{imagemUrl}" placeholder="https://...">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a th:href="@{/livros}" class="btn-back">Cancelar</a>
+                    <button type="submit" class="btn-primary">
+                        <span th:text="${livro.id != null ? 'Atualizar' : 'Salvar'}"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

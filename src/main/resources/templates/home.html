@@ -6,166 +6,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Bibliotech</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
-        .navbar-custom {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #fafafa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
-        .card-custom {
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .navbar-brand {
+            color: #333 !important;
+            font-weight: 600;
+            font-size: 20px;
+        }
+        .nav-link { color: #666 !important; font-size: 14px; }
+        .nav-link:hover { color: #333 !important; }
+        .container { max-width: 1000px; }
+        h1 { color: #333; font-weight: 600; font-size: 28px; margin: 40px 0 30px; }
+        .card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .card:hover {
+            border-color: #333;
+            transform: translateY(-2px);
+        }
+        .card-icon { font-size: 40px; margin-bottom: 15px; }
+        .card-title { color: #333; font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .card-text { color: #999; font-size: 14px; margin-bottom: 20px; }
+        .btn-card {
+            background: #333;
+            color: white;
             border: none;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
         }
-        .card-custom:hover {
-            transform: translateY(-5px);
+        .btn-card:hover { background: #000; color: white; }
+        .btn-logout {
+            background: none;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 14px;
         }
-        .icon-large {
-            font-size: 3rem;
-        }
+        .btn-logout:hover { border-color: #333; color: #333; }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+    <nav class="navbar">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="bi bi-book-fill me-2"></i>Bibliotech
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-item nav-link" href="#" sec:authentication="name"></a>
-                    </li>
-                    <li class="nav-item">
-                        <span class="nav-item nav-link">
-                            <i class="bi bi-shield-fill-check" sec:authorize="hasRole('ADMIN')"></i>
-                            <span sec:authorize="hasRole('ADMIN')"> Admin</span>
-                            <i class="bi bi-person-fill" sec:authorize="hasRole('USER')"></i>
-                            <span sec:authorize="hasRole('USER')"> Usuário</span>
-                        </span>
-                    </li>
-                    <li class="nav-item">
-                        <form th:action="@{/logout}" method="post" style="display: inline;">
-                            <button type="submit" class="btn btn-link nav-link" style="border: none; background: none;">
-                                <i class="bi bi-box-arrow-right me-1"></i>Sair
-                            </button>
-                        </form>
-                    </li>
-                </ul>
+            <a class="navbar-brand" th:href="@{/home}">📚 Bibliotech</a>
+            <div>
+                <span class="nav-link d-inline" sec:authentication="name"></span>
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="btn-logout">Sair</button>
+                </form>
             </div>
         </div>
     </nav>
 
-    <!-- Conteúdo -->
-    <div class="container mt-5">
-        <div class="text-center mb-5">
-            <h1 class="display-4">
-                <i class="bi bi-house-fill me-3"></i>Bem-vindo ao Bibliotech!
-            </h1>
-            <p class="lead">Sistema de Gerenciamento de Livraria</p>
-        </div>
+    <div class="container">
+        <h1>Bem-vindo</h1>
 
-        <!-- Cards de Funcionalidades -->
         <div class="row g-4">
-            <!-- Livros -->
             <div class="col-md-4">
-                <div class="card card-custom text-center p-4">
-                    <div class="card-body">
-                        <i class="bi bi-book-fill text-primary icon-large"></i>
-                        <h5 class="card-title mt-3">Livros</h5>
-                        <p class="card-text">Gerencie o catálogo de livros</p>
-                        <a href="#" class="btn btn-primary">
-                            <i class="bi bi-arrow-right me-2"></i>Acessar
-                        </a>
-                    </div>
+                <div class="card">
+                    <div class="card-icon">📚</div>
+                    <div class="card-title">Livros</div>
+                    <div class="card-text">Catálogo de livros</div>
+                    <a th:href="@{/livros}" class="btn-card">Acessar</a>
                 </div>
             </div>
-
-            <!-- Empréstimos -->
             <div class="col-md-4">
-                <div class="card card-custom text-center p-4">
-                    <div class="card-body">
-                        <i class="bi bi-arrow-left-right text-success icon-large"></i>
-                        <h5 class="card-title mt-3">Empréstimos</h5>
-                        <p class="card-text">Controle de empréstimos e devoluções</p>
-                        <a href="#" class="btn btn-success">
-                            <i class="bi bi-arrow-right me-2"></i>Acessar
-                        </a>
-                    </div>
+                <div class="card">
+                    <div class="card-icon">🔄</div>
+                    <div class="card-title">Empréstimos</div>
+                    <div class="card-text">Empréstimos e devoluções</div>
+                    <a href="#" class="btn-card">Acessar</a>
                 </div>
             </div>
-
-            <!-- Usuários (Apenas Admin) -->
             <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
-                <div class="card card-custom text-center p-4">
-                    <div class="card-body">
-                        <i class="bi bi-people-fill text-warning icon-large"></i>
-                        <h5 class="card-title mt-3">Usuários</h5>
-                        <p class="card-text">Gerenciar usuários do sistema</p>
-                        <a href="#" class="btn btn-warning">
-                            <i class="bi bi-arrow-right me-2"></i>Acessar
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Autores -->
-            <div class="col-md-4">
-                <div class="card card-custom text-center p-4">
-                    <div class="card-body">
-                        <i class="bi bi-person-badge-fill text-info icon-large"></i>
-                        <h5 class="card-title mt-3">Autores</h5>
-                        <p class="card-text">Cadastro de autores</p>
-                        <a href="#" class="btn btn-info text-white">
-                            <i class="bi bi-arrow-right me-2"></i>Acessar
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Categorias -->
-            <div class="col-md-4">
-                <div class="card card-custom text-center p-4">
-                    <div class="card-body">
-                        <i class="bi bi-tag-fill text-danger icon-large"></i>
-                        <h5 class="card-title mt-3">Categorias</h5>
-                        <p class="card-text">Organização por categorias</p>
-                        <a href="#" class="btn btn-danger">
-                            <i class="bi bi-arrow-right me-2"></i>Acessar
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Relatórios (Apenas Admin) -->
-            <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
-                <div class="card card-custom text-center p-4">
-                    <div class="card-body">
-                        <i class="bi bi-graph-up text-secondary icon-large"></i>
-                        <h5 class="card-title mt-3">Relatórios</h5>
-                        <p class="card-text">Estatísticas e relatórios</p>
-                        <a href="#" class="btn btn-secondary">
-                            <i class="bi bi-arrow-right me-2"></i>Acessar
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Informações -->
-        <div class="row mt-5">
-            <div class="col-md-12">
-                <div class="alert alert-info">
-                    <h5><i class="bi bi-info-circle-fill me-2"></i>Informação</h5>
-                    <p class="mb-0">
-                        <strong>Etapa Atual:</strong> Sistema funcional com autenticação e autorização.<br>
-                        <strong>Próximos Passos:</strong> As funcionalidades completas de CRUD para livros, 
-                        empréstimos e outras entidades serão implementadas nas próximas etapas.
-                    </p>
+                <div class="card">
+                    <div class="card-icon">👥</div>
+                    <div class="card-title">Usuários</div>
+                    <div class="card-text">Gerenciar usuários</div>
+                    <a href="#" class="btn-card">Acessar</a>
                 </div>
             </div>
         </div>
