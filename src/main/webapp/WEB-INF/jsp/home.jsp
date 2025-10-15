@@ -85,6 +85,18 @@
                 <div class="card-desc">Gerenciar acervo de livros</div>
             </a>
 
+            <a href="${pageContext.request.contextPath}/autores" class="card">
+                <div class="card-icon">✍️</div>
+                <div class="card-title">Autores</div>
+                <div class="card-desc">Gerenciar autores e escritores</div>
+            </a>
+
+            <a href="${pageContext.request.contextPath}/categorias" class="card">
+                <div class="card-icon">🏷️</div>
+                <div class="card-title">Categorias</div>
+                <div class="card-desc">Gerenciar categorias de livros</div>
+            </a>
+
             <a href="${pageContext.request.contextPath}/emprestimos" class="card">
                 <div class="card-icon">🔄</div>
                 <div class="card-title">Empréstimos</div>
