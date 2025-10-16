@@ -195,7 +195,7 @@
                 <div class="info-item">
                     <div class="info-label">Previsão de Devolução</div>
                     <div class="info-value">
-                        <fmtDate:formatDate value="${emprestimo.dataPrevistaDevolucao}"/>
+                        <fmtDate:formatDateTime value="${emprestimo.dataPrevistaDevolucao}"/>
                     </div>
                 </div>
 
