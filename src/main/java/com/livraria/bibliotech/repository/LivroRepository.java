@@ -43,4 +43,8 @@ public interface LivroRepository extends JpaRepository<Livro, Long> {
     // Buscar livro com autores e categoria carregados (para detalhes)
     @Query("SELECT DISTINCT l FROM Livro l LEFT JOIN FETCH l.autores LEFT JOIN FETCH l.categoria WHERE l.id = :id")
     Optional<Livro> findByIdWithDetails(@Param("id") Long id);
+    
+    // Buscar todos os livros com autores e categoria carregados (para lista)
+    @Query("SELECT DISTINCT l FROM Livro l LEFT JOIN FETCH l.categoria ORDER BY l.titulo")
+    List<Livro> findAllWithCategoria();
 }

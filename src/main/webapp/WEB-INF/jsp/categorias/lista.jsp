@@ -192,8 +192,8 @@
                             </div>
                             <div class="card-footer">
                                 <span class="card-count">
-                                    📚 ${categoria.livros.size()} 
-                                    ${categoria.livros.size() == 1 ? 'livro' : 'livros'}
+                                    📚 ${contagemLivros[categoria.id]} 
+                                    ${contagemLivros[categoria.id] == 1 ? 'livro' : 'livros'}
                                 </span>
                                 <div class="card-actions">
                                     <a href="${pageContext.request.contextPath}/categorias/${categoria.id}">

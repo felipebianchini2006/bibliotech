@@ -62,7 +62,7 @@ public class LivroService {
     }
 
     public List<Livro> listarTodos() {
-        return livroRepository.findAll();
+        return livroRepository.findAllWithCategoria();
     }
 
     public List<Livro> listarDisponiveis() {

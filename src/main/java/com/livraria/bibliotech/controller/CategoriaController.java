@@ -1,6 +1,7 @@
 package com.livraria.bibliotech.controller;
 
 import com.livraria.bibliotech.model.Categoria;
+import com.livraria.bibliotech.repository.CategoriaRepository;
 import com.livraria.bibliotech.service.CategoriaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controller para gerenciamento de categorias de livros.
@@ -22,13 +27,23 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class CategoriaController {
 
     private final CategoriaService categoriaService;
+    private final CategoriaRepository categoriaRepository;
 
     /**
      * Lista todas as categorias.
      */
     @GetMapping({"", "/"})
     public String listar(Model model) {
-        model.addAttribute("categorias", categoriaService.listarTodas());
+        List<Categoria> categorias = categoriaService.listarTodas();
+        
+        // Criar mapa com contagem de livros por categoria
+        Map<Long, Long> contagemLivros = new HashMap<>();
+        for (Categoria cat : categorias) {
+            contagemLivros.put(cat.getId(), categoriaRepository.contarLivrosPorCategoria(cat.getId()));
+        }
+        
+        model.addAttribute("categorias", categorias);
+        model.addAttribute("contagemLivros", contagemLivros);
         return "categorias/lista";
     }
 
@@ -70,8 +85,9 @@ public class CategoriaController {
     @GetMapping("/{id}")
     public String visualizar(@PathVariable Long id, Model model) {
         Categoria categoria = categoriaService.buscarPorId(id);
+        Long quantidadeLivros = categoriaRepository.contarLivrosPorCategoria(id);
         model.addAttribute("categoria", categoria);
-        model.addAttribute("quantidadeLivros", categoria.getLivros().size());
+        model.addAttribute("quantidadeLivros", quantidadeLivros);
         return "categorias/detalhes";
     }
 
@@ -114,10 +130,9 @@ public class CategoriaController {
     @PostMapping("/{id}/deletar")
     public String deletar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            Categoria categoria = categoriaService.buscarPorId(id);
-            
             // Verificar se há livros associados
-            if (!categoria.getLivros().isEmpty()) {
+            Long quantidadeLivros = categoriaRepository.contarLivrosPorCategoria(id);
+            if (quantidadeLivros > 0) {
                 redirectAttributes.addFlashAttribute("erro", 
                     "Não é possível deletar categoria com livros cadastrados. " +
                     "Remova ou recategorize os livros primeiro.");
@@ -138,12 +153,23 @@ public class CategoriaController {
      */
     @GetMapping("/buscar")
     public String buscar(@RequestParam(required = false) String nome, Model model) {
+        List<Categoria> categorias;
+        
         if (nome != null && !nome.isEmpty()) {
-            model.addAttribute("categorias", categoriaService.buscarPorNome(nome));
+            categorias = categoriaService.buscarPorNome(nome);
             model.addAttribute("termoBusca", nome);
         } else {
-            model.addAttribute("categorias", categoriaService.listarTodas());
+            categorias = categoriaService.listarTodas();
         }
+        
+        // Criar mapa com contagem de livros
+        Map<Long, Long> contagemLivros = new HashMap<>();
+        for (Categoria cat : categorias) {
+            contagemLivros.put(cat.getId(), categoriaRepository.contarLivrosPorCategoria(cat.getId()));
+        }
+        
+        model.addAttribute("categorias", categorias);
+        model.addAttribute("contagemLivros", contagemLivros);
         return "categorias/lista";
     }
 }
