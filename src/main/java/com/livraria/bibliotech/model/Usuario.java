@@ -1,6 +1,5 @@
 package com.livraria.bibliotech.model;
 
-import com.livraria.bibliotech.validator.ValidCPF;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -52,7 +51,6 @@ public class Usuario {
     private String endereco;
 
     @NotBlank(message = "CPF é obrigatório")
-    @ValidCPF(message = "CPF inválido")
     @Column(unique = true, nullable = false, length = 11)
     private String cpf;
 

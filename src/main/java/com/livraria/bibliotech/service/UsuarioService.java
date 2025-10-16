@@ -2,10 +2,8 @@ package com.livraria.bibliotech.service;
 
 import com.livraria.bibliotech.exception.BusinessException;
 import com.livraria.bibliotech.exception.ResourceNotFoundException;
-import com.livraria.bibliotech.exception.ValidationException;
 import com.livraria.bibliotech.model.Usuario;
 import com.livraria.bibliotech.repository.UsuarioRepository;
-import com.livraria.bibliotech.validator.CPFValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,11 +21,8 @@ public class UsuarioService {
 
     @Transactional
     public Usuario cadastrar(Usuario usuario) {
-        // Validar CPF
-        String cpfLimpo = CPFValidator.cleanCPF(usuario.getCpf());
-        if (!CPFValidator.isValidCPF(cpfLimpo)) {
-            throw new ValidationException("cpf", "CPF inválido");
-        }
+        // Limpar CPF (remover formatação)
+        String cpfLimpo = usuario.getCpf().replaceAll("[^0-9]", "");
         
         // Verificar se email já existe
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
