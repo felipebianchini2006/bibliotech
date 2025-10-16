@@ -18,12 +18,12 @@ import java.util.Map;
 
 /**
  * Controller para gerenciamento de categorias de livros.
- * Acesso restrito a administradores.
+ * Visualização: Todos os usuários autenticados
+ * Modificação: Apenas administradores
  */
 @Controller
 @RequestMapping("/categorias")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class CategoriaController {
 
     private final CategoriaService categoriaService;
@@ -51,6 +51,7 @@ public class CategoriaController {
      * Exibe formulário para nova categoria.
      */
     @GetMapping("/nova")
+    @PreAuthorize("hasRole('ADMIN')")
     public String mostrarFormulario(Model model) {
         model.addAttribute("categoria", new Categoria());
         return "categorias/form";
@@ -60,6 +61,7 @@ public class CategoriaController {
      * Processa criação de nova categoria.
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public String salvar(
         @Valid @ModelAttribute Categoria categoria,
         BindingResult result,
@@ -95,6 +97,7 @@ public class CategoriaController {
      * Exibe formulário de edição de categoria.
      */
     @GetMapping("/{id}/editar")
+    @PreAuthorize("hasRole('ADMIN')")
     public String mostrarFormularioEdicao(@PathVariable Long id, Model model) {
         model.addAttribute("categoria", categoriaService.buscarPorId(id));
         return "categorias/form";
@@ -104,6 +107,7 @@ public class CategoriaController {
      * Processa atualização de categoria.
      */
     @PostMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String atualizar(
         @PathVariable Long id,
         @Valid @ModelAttribute Categoria categoria,
@@ -128,6 +132,7 @@ public class CategoriaController {
      * Deleta uma categoria.
      */
     @PostMapping("/{id}/deletar")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deletar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             // Verificar se há livros associados

@@ -6,6 +6,7 @@ import com.livraria.bibliotech.service.CategoriaService;
 import com.livraria.bibliotech.service.LivroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,6 +29,7 @@ public class LivroController {
     }
 
     @GetMapping("/novo")
+    @PreAuthorize("hasRole('ADMIN')")
     public String mostrarFormulario(Model model) {
         model.addAttribute("livro", new Livro());
         model.addAttribute("categorias", categoriaService.listarTodas());
@@ -36,6 +38,7 @@ public class LivroController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public String salvar(@Valid @ModelAttribute Livro livro, 
                         BindingResult result, 
                         Model model,
@@ -65,6 +68,7 @@ public class LivroController {
     }
 
     @GetMapping("/{id}/editar")
+    @PreAuthorize("hasRole('ADMIN')")
     public String mostrarFormularioEdicao(@PathVariable Long id, Model model) {
         model.addAttribute("livro", livroService.buscarPorIdComDetalhes(id));
         model.addAttribute("categorias", categoriaService.listarTodas());
@@ -73,6 +77,7 @@ public class LivroController {
     }
 
     @PostMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String atualizar(@PathVariable Long id,
                            @Valid @ModelAttribute Livro livro,
                            BindingResult result,
@@ -97,6 +102,7 @@ public class LivroController {
     }
 
     @PostMapping("/{id}/deletar")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deletar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             livroService.deletar(id);
