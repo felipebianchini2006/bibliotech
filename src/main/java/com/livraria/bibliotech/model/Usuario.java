@@ -1,5 +1,6 @@
 package com.livraria.bibliotech.model;
 
+import com.livraria.bibliotech.validator.ValidCPF;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"emprestimos", "senha"})
 public class Usuario {
 
     @Id
@@ -47,6 +50,7 @@ public class Usuario {
     private String endereco;
 
     @NotBlank(message = "CPF é obrigatório")
+    @ValidCPF(message = "CPF inválido")
     @Column(unique = true, nullable = false, length = 11)
     private String cpf;
 
@@ -60,13 +64,21 @@ public class Usuario {
     @Column(name = "data_cadastro", nullable = false, updatable = false)
     private LocalDateTime dataCadastro;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "usuario", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     private Set<Emprestimo> emprestimos = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {
         dataCadastro = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        // Garante que CPF não tenha formatação
+        if (cpf != null) {
+            cpf = cpf.replaceAll("[^0-9]", "");
+        }
     }
 
     public enum Role {

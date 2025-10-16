@@ -1,5 +1,7 @@
 package com.livraria.bibliotech.service;
 
+import com.livraria.bibliotech.exception.BusinessException;
+import com.livraria.bibliotech.exception.ResourceNotFoundException;
 import com.livraria.bibliotech.model.Categoria;
 import com.livraria.bibliotech.repository.CategoriaRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,7 @@ public class CategoriaService {
     @Transactional
     public Categoria salvar(Categoria categoria) {
         if (categoriaRepository.existsByNome(categoria.getNome())) {
-            throw new IllegalArgumentException("Categoria já existe");
+            throw new BusinessException("Categoria já existe", "CATEGORY_ALREADY_EXISTS");
         }
         return categoriaRepository.save(categoria);
     }
@@ -28,7 +30,7 @@ public class CategoriaService {
         
         if (!categoria.getNome().equals(categoriaAtualizada.getNome()) && 
             categoriaRepository.existsByNome(categoriaAtualizada.getNome())) {
-            throw new IllegalArgumentException("Nome da categoria já existe");
+            throw new BusinessException("Nome da categoria já existe", "CATEGORY_NAME_EXISTS");
         }
 
         categoria.setNome(categoriaAtualizada.getNome());
@@ -45,7 +47,7 @@ public class CategoriaService {
 
     public Categoria buscarPorId(Long id) {
         return categoriaRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
+            .orElseThrow(() -> new ResourceNotFoundException("Categoria", id));
     }
 
     public List<Categoria> listarTodas() {

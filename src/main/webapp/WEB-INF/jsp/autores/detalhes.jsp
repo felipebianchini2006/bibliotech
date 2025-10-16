@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fmt" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -241,7 +242,7 @@
                     <c:if test="${not empty autor.dataNascimento}">
                         <div class="meta-item">
                             <span class="meta-icon">📅</span>
-                            <span>Nascido em ${autor.dataNascimento}</span>
+                            <span>Nascido em <fmt:formatDate value="${autor.dataNascimento}"/></span>
                         </div>
                     </c:if>
 
@@ -308,7 +309,7 @@
                                 <div class="livro-titulo">${livro.titulo}</div>
                                 <div class="livro-info">
                                     ISBN: ${livro.isbn}<br>
-                                    Publicado: ${livro.dataPublicacao}
+                                    Publicado: <fmt:formatDate value="${livro.dataPublicacao}"/>
                                 </div>
                                 <c:if test="${not empty livro.categoria}">
                                     <span class="livro-categoria">${livro.categoria.nome}</span>

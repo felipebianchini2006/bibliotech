@@ -1,6 +1,7 @@
 package com.livraria.bibliotech.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.livraria.bibliotech.validator.ValidISBN;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,6 +32,7 @@ public class Livro {
     private String titulo;
 
     @NotBlank(message = "ISBN é obrigatório")
+    @ValidISBN(message = "ISBN inválido")
     @Column(unique = true, nullable = false, length = 13)
     private String isbn;
 
@@ -64,7 +66,7 @@ public class Livro {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "livro", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Emprestimo> emprestimos = new HashSet<>();
 
@@ -72,6 +74,18 @@ public class Livro {
     protected void onCreate() {
         if (quantidadeDisponivel == null) {
             quantidadeDisponivel = quantidadeTotal;
+        }
+        // Remove formatação do ISBN
+        if (isbn != null) {
+            isbn = isbn.replaceAll("[^0-9X]", "");
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        // Remove formatação do ISBN
+        if (isbn != null) {
+            isbn = isbn.replaceAll("[^0-9X]", "");
         }
     }
 }

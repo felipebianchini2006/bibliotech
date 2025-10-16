@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fmtDate" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
@@ -187,16 +188,14 @@
                 <div class="info-item">
                     <div class="info-label">Data do Empréstimo</div>
                     <div class="info-value">
-                        <c:set var="dataEmpStr" value="${emprestimo.dataEmprestimo.toString()}" />
-                        ${fn:substring(dataEmpStr, 8, 10)}/${fn:substring(dataEmpStr, 5, 7)}/${fn:substring(dataEmpStr, 0, 4)} às ${fn:substring(dataEmpStr, 11, 16)}
+                        <fmtDate:formatDateTime value="${emprestimo.dataEmprestimo}"/>
                     </div>
                 </div>
 
                 <div class="info-item">
                     <div class="info-label">Previsão de Devolução</div>
                     <div class="info-value">
-                        <c:set var="dataPrevStr" value="${emprestimo.dataPrevistaDevolucao.toString()}" />
-                        ${fn:substring(dataPrevStr, 8, 10)}/${fn:substring(dataPrevStr, 5, 7)}/${fn:substring(dataPrevStr, 0, 4)}
+                        <fmtDate:formatDate value="${emprestimo.dataPrevistaDevolucao}"/>
                     </div>
                 </div>
 
@@ -204,8 +203,7 @@
                     <div class="info-item">
                         <div class="info-label">Data da Devolução</div>
                         <div class="info-value">
-                            <c:set var="dataDevStr" value="${emprestimo.dataDevolucao.toString()}" />
-                            ${fn:substring(dataDevStr, 8, 10)}/${fn:substring(dataDevStr, 5, 7)}/${fn:substring(dataDevStr, 0, 4)} às ${fn:substring(dataDevStr, 11, 16)}
+                            <fmtDate:formatDateTime value="${emprestimo.dataDevolucao}"/>
                         </div>
                     </div>
                 </c:if>

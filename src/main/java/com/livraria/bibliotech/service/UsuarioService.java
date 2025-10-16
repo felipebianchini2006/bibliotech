@@ -1,7 +1,11 @@
 package com.livraria.bibliotech.service;
 
+import com.livraria.bibliotech.exception.BusinessException;
+import com.livraria.bibliotech.exception.ResourceNotFoundException;
+import com.livraria.bibliotech.exception.ValidationException;
 import com.livraria.bibliotech.model.Usuario;
 import com.livraria.bibliotech.repository.UsuarioRepository;
+import com.livraria.bibliotech.validator.CPFValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,15 +23,24 @@ public class UsuarioService {
 
     @Transactional
     public Usuario cadastrar(Usuario usuario) {
+        // Validar CPF
+        String cpfLimpo = CPFValidator.cleanCPF(usuario.getCpf());
+        if (!CPFValidator.isValidCPF(cpfLimpo)) {
+            throw new ValidationException("cpf", "CPF inválido");
+        }
+        
         // Verificar se email já existe
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new IllegalArgumentException("Email já cadastrado");
+            throw new BusinessException("Email já cadastrado", "EMAIL_ALREADY_EXISTS");
         }
 
         // Verificar se CPF já existe
-        if (usuarioRepository.existsByCpf(usuario.getCpf())) {
-            throw new IllegalArgumentException("CPF já cadastrado");
+        if (usuarioRepository.existsByCpf(cpfLimpo)) {
+            throw new BusinessException("CPF já cadastrado", "CPF_ALREADY_EXISTS");
         }
+
+        // Limpar e armazenar CPF sem formatação
+        usuario.setCpf(cpfLimpo);
 
         // Criptografar senha
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
@@ -60,7 +73,7 @@ public class UsuarioService {
 
     public Usuario buscarPorId(Long id) {
         return usuarioRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+            .orElseThrow(() -> new ResourceNotFoundException("Usuário", id));
     }
 
     public Optional<Usuario> buscarPorEmail(String email) {

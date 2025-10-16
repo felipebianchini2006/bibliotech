@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fmt" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -209,12 +210,10 @@
                                     <td>${emprestimo.usuario.nome}</td>
                                     <td>${emprestimo.livro.titulo}</td>
                                     <td>
-                                        <c:set var="dataEmpStr" value="${emprestimo.dataEmprestimo.toString()}" />
-                                        ${fn:substring(dataEmpStr, 8, 10)}/${fn:substring(dataEmpStr, 5, 7)}/${fn:substring(dataEmpStr, 0, 4)}
+                                        <fmt:formatDate value="${emprestimo.dataEmprestimo}"/>
                                     </td>
                                     <td>
-                                        <c:set var="dataPrevStr" value="${emprestimo.dataPrevistaDevolucao.toString()}" />
-                                        ${fn:substring(dataPrevStr, 8, 10)}/${fn:substring(dataPrevStr, 5, 7)}/${fn:substring(dataPrevStr, 0, 4)}
+                                        <fmt:formatDate value="${emprestimo.dataPrevistaDevolucao}"/>
                                     </td>
                                     <td>
                                         <c:choose>

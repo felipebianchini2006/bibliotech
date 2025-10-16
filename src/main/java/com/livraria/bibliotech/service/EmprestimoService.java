@@ -1,5 +1,7 @@
 package com.livraria.bibliotech.service;
 
+import com.livraria.bibliotech.exception.BusinessException;
+import com.livraria.bibliotech.exception.ResourceNotFoundException;
 import com.livraria.bibliotech.model.Emprestimo;
 import com.livraria.bibliotech.model.Livro;
 import com.livraria.bibliotech.model.Usuario;
@@ -43,26 +45,27 @@ public class EmprestimoService {
         // Buscar e validar usuário
         Usuario usuario = usuarioService.buscarPorId(usuarioId);
         if (!usuario.getAtivo()) {
-            throw new IllegalStateException("Usuário inativo não pode realizar empréstimos");
+            throw new BusinessException("Usuário inativo não pode realizar empréstimos", "USER_INACTIVE");
         }
 
         // Buscar e validar livro
         Livro livro = livroService.buscarPorId(livroId);
         if (livro.getQuantidadeDisponivel() <= 0) {
-            throw new IllegalStateException("Livro sem exemplares disponíveis no momento");
+            throw new BusinessException("Livro sem exemplares disponíveis no momento", "OUT_OF_STOCK");
         }
 
         // Validar se usuário já tem empréstimo ativo deste livro
         if (emprestimoRepository.existeEmprestimoAtivoUsuarioLivro(usuarioId, livroId)) {
-            throw new IllegalStateException("Usuário já possui empréstimo ativo deste livro");
+            throw new BusinessException("Usuário já possui empréstimo ativo deste livro", "DUPLICATE_LOAN");
         }
 
         // Validar limite de empréstimos simultâneos
         long emprestimosAtivos = usuarioService.contarEmprestimosAtivos(usuarioId);
         if (emprestimosAtivos >= MAX_EMPRESTIMOS_SIMULTANEOS) {
-            throw new IllegalStateException(
+            throw new BusinessException(
                 String.format("Usuário atingiu o limite máximo de %d empréstimos simultâneos", 
-                    MAX_EMPRESTIMOS_SIMULTANEOS)
+                    MAX_EMPRESTIMOS_SIMULTANEOS),
+                "MAX_LOANS_REACHED"
             );
         }
 
@@ -94,7 +97,7 @@ public class EmprestimoService {
         Emprestimo emprestimo = buscarPorId(emprestimoId);
 
         if (emprestimo.getStatus() != Emprestimo.Status.ATIVO) {
-            throw new IllegalStateException("Este empréstimo não está ativo");
+            throw new BusinessException("Este empréstimo não está ativo", "LOAN_NOT_ACTIVE");
         }
 
         // Marcar como devolvido
@@ -127,11 +130,14 @@ public class EmprestimoService {
         Emprestimo emprestimo = buscarPorId(emprestimoId);
 
         if (emprestimo.getStatus() != Emprestimo.Status.ATIVO) {
-            throw new IllegalStateException("Apenas empréstimos ativos podem ser renovados");
+            throw new BusinessException("Apenas empréstimos ativos podem ser renovados", "LOAN_NOT_ACTIVE");
         }
 
         if (emprestimo.isAtrasado()) {
-            throw new IllegalStateException("Não é possível renovar empréstimo atrasado. Realize a devolução primeiro.");
+            throw new BusinessException(
+                "Não é possível renovar empréstimo atrasado. Realize a devolução primeiro.",
+                "LOAN_OVERDUE"
+            );
         }
 
         // Adicionar mais dias ao prazo
@@ -154,7 +160,7 @@ public class EmprestimoService {
         Emprestimo emprestimo = buscarPorId(emprestimoId);
 
         if (emprestimo.getStatus() == Emprestimo.Status.DEVOLVIDO) {
-            throw new IllegalStateException("Não é possível cancelar empréstimo já devolvido");
+            throw new BusinessException("Não é possível cancelar empréstimo já devolvido", "LOAN_ALREADY_RETURNED");
         }
 
         emprestimo.setStatus(Emprestimo.Status.CANCELADO);
@@ -210,7 +216,7 @@ public class EmprestimoService {
      */
     public Emprestimo buscarPorId(Long id) {
         return emprestimoRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Empréstimo não encontrado"));
+            .orElseThrow(() -> new ResourceNotFoundException("Empréstimo", id));
     }
 
     /**

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -105,7 +105,7 @@
                     <div class="col-6">
                         <label for="dataPublicacao">Data de Publicação *</label>
                         <input type="date" id="dataPublicacao" name="dataPublicacao" 
-                               value="${livro.dataPublicacao}" required>
+                               value="<tags:formatDateISO value='${livro.dataPublicacao}'/>" required>
                     </div>
                 </div>
 

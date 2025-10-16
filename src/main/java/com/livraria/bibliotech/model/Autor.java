@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "livros")
+@ToString(exclude = {"livros"})
 public class Autor {
 
     @Id

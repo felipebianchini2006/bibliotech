@@ -1,5 +1,6 @@
 package com.livraria.bibliotech.service;
 
+import com.livraria.bibliotech.exception.ResourceNotFoundException;
 import com.livraria.bibliotech.model.Autor;
 import com.livraria.bibliotech.repository.AutorRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,12 +41,12 @@ public class AutorService {
 
     public Autor buscarPorId(Long id) {
         return autorRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Autor não encontrado"));
+            .orElseThrow(() -> new ResourceNotFoundException("Autor", id));
     }
     
     public Autor buscarPorIdComLivros(Long id) {
         return autorRepository.findByIdWithLivros(id)
-            .orElseThrow(() -> new IllegalArgumentException("Autor não encontrado"));
+            .orElseThrow(() -> new ResourceNotFoundException("Autor", id));
     }
 
     public List<Autor> listarTodos() {

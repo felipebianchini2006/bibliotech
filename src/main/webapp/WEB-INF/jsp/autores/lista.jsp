@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fmt" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -250,7 +251,7 @@
                                     <td>
                                         <c:choose>
                                             <c:when test="${not empty autor.dataNascimento}">
-                                                ${autor.dataNascimento}
+                                                <fmt:formatDate value="${autor.dataNascimento}"/>
                                             </c:when>
                                             <c:otherwise>-</c:otherwise>
                                         </c:choose>

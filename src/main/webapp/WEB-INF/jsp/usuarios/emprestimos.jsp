@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib prefix="fmt" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -140,18 +141,15 @@
                                     <td><strong>${emprestimo.livro.titulo}</strong></td>
                                     <td>${emprestimo.livro.isbn}</td>
                                     <td>
-                                        <c:set var="dataEmpStr" value="${emprestimo.dataEmprestimo.toString()}" />
-                                        ${fn:substring(dataEmpStr, 8, 10)}/${fn:substring(dataEmpStr, 5, 7)}/${fn:substring(dataEmpStr, 0, 4)}
+                                        <fmt:formatDate value="${emprestimo.dataEmprestimo}"/>
                                     </td>
                                     <td>
-                                        <c:set var="dataPrevStr" value="${emprestimo.dataPrevistaDevolucao.toString()}" />
-                                        ${fn:substring(dataPrevStr, 8, 10)}/${fn:substring(dataPrevStr, 5, 7)}/${fn:substring(dataPrevStr, 0, 4)}
+                                        <fmt:formatDate value="${emprestimo.dataPrevistaDevolucao}"/>
                                     </td>
                                     <td>
                                         <c:choose>
                                             <c:when test="${not empty emprestimo.dataDevolucao}">
-                                                <c:set var="dataDevStr" value="${emprestimo.dataDevolucao.toString()}" />
-                                                ${fn:substring(dataDevStr, 8, 10)}/${fn:substring(dataDevStr, 5, 7)}/${fn:substring(dataDevStr, 0, 4)}
+                                                <fmt:formatDate value="${emprestimo.dataDevolucao}"/>
                                             </c:when>
                                             <c:otherwise>
                                                 <span style="color: #999;">-</span>

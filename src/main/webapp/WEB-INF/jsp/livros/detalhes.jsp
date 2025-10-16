@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -170,7 +170,7 @@
                     <div class="info-row">
                         <div class="info-label">Publicação</div>
                         <div class="info-value">
-                            <fmt:formatDate value="${livro.dataPublicacao}" pattern="dd/MM/yyyy"/>
+                            <tags:formatDate value="${livro.dataPublicacao}"/>
                         </div>
                     </div>
 
