@@ -60,7 +60,7 @@ public class LivroController {
 
     @GetMapping("/{id}")
     public String visualizar(@PathVariable Long id, Model model) {
-        model.addAttribute("livro", livroService.buscarPorId(id));
+        model.addAttribute("livro", livroService.buscarPorIdComDetalhes(id));
         return "livros/detalhes";
     }
 

@@ -50,7 +50,7 @@ public class AutorController {
 
     @GetMapping("/{id}")
     public String visualizar(@PathVariable Long id, Model model) {
-        Autor autor = autorService.buscarPorId(id);
+        Autor autor = autorService.buscarPorIdComLivros(id);
         model.addAttribute("autor", autor);
         return "autores/detalhes";
     }

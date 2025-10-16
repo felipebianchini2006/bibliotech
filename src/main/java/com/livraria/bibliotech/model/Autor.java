@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "livros")
 public class Autor {
 
     @Id
@@ -39,7 +41,7 @@ public class Autor {
     @Column(length = 500)
     private String fotoUrl;
 
-    @ManyToMany(mappedBy = "autores")
+    @ManyToMany(mappedBy = "autores", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Livro> livros = new HashSet<>();
 }

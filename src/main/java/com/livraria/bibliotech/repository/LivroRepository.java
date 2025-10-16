@@ -39,4 +39,8 @@ public interface LivroRepository extends JpaRepository<Livro, Long> {
 
     // Verificar se ISBN já existe
     boolean existsByIsbn(String isbn);
+    
+    // Buscar livro com autores e categoria carregados (para detalhes)
+    @Query("SELECT DISTINCT l FROM Livro l LEFT JOIN FETCH l.autores LEFT JOIN FETCH l.categoria WHERE l.id = :id")
+    Optional<Livro> findByIdWithDetails(@Param("id") Long id);
 }

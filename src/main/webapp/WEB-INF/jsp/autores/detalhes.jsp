@@ -247,7 +247,14 @@
 
                     <div class="meta-item">
                         <span class="meta-icon">📚</span>
-                        <span>${autor.livros.size()} livro(s) publicado(s)</span>
+                        <span>
+                            <c:choose>
+                                <c:when test="${not empty autor.livros}">
+                                    ${autor.livros.size()}
+                                </c:when>
+                                <c:otherwise>0</c:otherwise>
+                            </c:choose> livro(s) publicado(s)
+                        </span>
                     </div>
                 </div>
 

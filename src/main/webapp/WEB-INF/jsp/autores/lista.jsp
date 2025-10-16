@@ -248,11 +248,21 @@
                                     </td>
                                     <td>${autor.nacionalidade}</td>
                                     <td>
-                                        <c:if test="${not empty autor.dataNascimento}">
-                                            ${autor.dataNascimento}
-                                        </c:if>
+                                        <c:choose>
+                                            <c:when test="${not empty autor.dataNascimento}">
+                                                ${autor.dataNascimento}
+                                            </c:when>
+                                            <c:otherwise>-</c:otherwise>
+                                        </c:choose>
                                     </td>
-                                    <td>${autor.livros.size()} livro(s)</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${not empty autor.livros}">
+                                                ${autor.livros.size()}
+                                            </c:when>
+                                            <c:otherwise>0</c:otherwise>
+                                        </c:choose> livro(s)
+                                    </td>
                                     <td>
                                         <div class="actions">
                                             <a href="${pageContext.request.contextPath}/autores/${autor.id}" 

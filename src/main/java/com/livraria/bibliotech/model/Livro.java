@@ -1,5 +1,6 @@
 package com.livraria.bibliotech.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +8,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -17,6 +19,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"autores", "emprestimos"})
 public class Livro {
 
     @Id
@@ -49,7 +52,7 @@ public class Livro {
     @Column(length = 500)
     private String imagemUrl;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "livro_autor",
         joinColumns = @JoinColumn(name = "livro_id"),
@@ -57,11 +60,12 @@ public class Livro {
     )
     private Set<Autor> autores = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Emprestimo> emprestimos = new HashSet<>();
 
     @PrePersist

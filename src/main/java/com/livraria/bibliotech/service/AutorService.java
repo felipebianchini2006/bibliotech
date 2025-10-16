@@ -42,6 +42,11 @@ public class AutorService {
         return autorRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Autor não encontrado"));
     }
+    
+    public Autor buscarPorIdComLivros(Long id) {
+        return autorRepository.findByIdWithLivros(id)
+            .orElseThrow(() -> new IllegalArgumentException("Autor não encontrado"));
+    }
 
     public List<Autor> listarTodos() {
         return autorRepository.findAll();

@@ -55,6 +55,11 @@ public class LivroService {
         return livroRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Livro não encontrado"));
     }
+    
+    public Livro buscarPorIdComDetalhes(Long id) {
+        return livroRepository.findByIdWithDetails(id)
+            .orElseThrow(() -> new IllegalArgumentException("Livro não encontrado"));
+    }
 
     public List<Livro> listarTodos() {
         return livroRepository.findAll();
