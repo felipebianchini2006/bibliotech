@@ -105,7 +105,7 @@
                     <div class="col-6">
                         <label for="dataPublicacao">Data de Publicação *</label>
                         <input type="date" id="dataPublicacao" name="dataPublicacao" 
-                               value="<fmt:formatDate value='${livro.dataPublicacao}' pattern='yyyy-MM-dd'/>" required>
+                               value="${livro.dataPublicacao}" required>
                     </div>
                 </div>
 
@@ -117,10 +117,11 @@
                 <div class="row">
                     <div class="col-6">
                         <label for="categoriaId">Categoria</label>
-                        <select id="categoriaId" name="categoriaId">
+                        <select id="categoriaId" name="categoria.id">
                             <option value="">Selecione...</option>
                             <c:forEach items="${categorias}" var="cat">
-                                <option value="${cat.id}" ${livro.categoria.id == cat.id ? 'selected' : ''}>
+                                <option value="${cat.id}" 
+                                    <c:if test="${livro.categoria != null && livro.categoria.id == cat.id}">selected</c:if>>
                                     ${cat.nome}
                                 </option>
                             </c:forEach>
@@ -142,7 +143,12 @@
                     <label for="autores">Autores</label>
                     <select id="autores" name="autores" multiple size="4">
                         <c:forEach items="${autores}" var="autor">
-                            <option value="${autor.id}">${autor.nome}</option>
+                            <option value="${autor.id}"
+                                <c:if test="${livro.autores != null}">
+                                    <c:forEach items="${livro.autores}" var="livroAutor">
+                                        <c:if test="${livroAutor.id == autor.id}">selected</c:if>
+                                    </c:forEach>
+                                </c:if>>${autor.nome}</option>
                         </c:forEach>
                     </select>
                     <small>Ctrl + clique para múltiplos</small>

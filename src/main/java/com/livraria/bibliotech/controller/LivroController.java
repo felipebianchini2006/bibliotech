@@ -66,7 +66,7 @@ public class LivroController {
 
     @GetMapping("/{id}/editar")
     public String mostrarFormularioEdicao(@PathVariable Long id, Model model) {
-        model.addAttribute("livro", livroService.buscarPorId(id));
+        model.addAttribute("livro", livroService.buscarPorIdComDetalhes(id));
         model.addAttribute("categorias", categoriaService.listarTodas());
         model.addAttribute("autores", autorService.listarTodos());
         return "livros/form";
