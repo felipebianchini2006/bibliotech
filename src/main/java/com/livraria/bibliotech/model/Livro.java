@@ -8,8 +8,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -21,6 +23,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"autores", "emprestimos"})
+@EqualsAndHashCode(exclude = {"autores", "emprestimos", "categoria"})
 public class Livro {
 
     @Id
@@ -32,7 +35,6 @@ public class Livro {
     private String titulo;
 
     @NotBlank(message = "ISBN é obrigatório")
-    @ValidISBN(message = "ISBN inválido")
     @Column(unique = true, nullable = false, length = 13)
     private String isbn;
 
@@ -40,6 +42,7 @@ public class Livro {
     private String descricao;
 
     @NotNull(message = "Data de publicação é obrigatória")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "data_publicacao", nullable = false)
     private LocalDate dataPublicacao;
 

@@ -104,8 +104,15 @@
                     </div>
                     <div class="col-6">
                         <label for="dataPublicacao">Data de Publicação *</label>
-                        <input type="date" id="dataPublicacao" name="dataPublicacao" 
-                               value="<tags:formatDateISO value='${livro.dataPublicacao}'/>" required>
+                        <c:choose>
+                            <c:when test="${not empty livro.dataPublicacao}">
+                                <input type="date" id="dataPublicacao" name="dataPublicacao" 
+                                       value="${com.livraria.bibliotech.util.DateFormatter.formatDateISO(livro.dataPublicacao)}" required>
+                            </c:when>
+                            <c:otherwise>
+                                <input type="date" id="dataPublicacao" name="dataPublicacao" required>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
 

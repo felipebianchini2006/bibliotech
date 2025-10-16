@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"livros"})
+@EqualsAndHashCode(exclude = {"livros"})
 public class Autor {
 
     @Id
@@ -32,6 +35,7 @@ public class Autor {
     @Column(length = 2000)
     private String biografia;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "data_nascimento")
     private LocalDate dataNascimento;
 

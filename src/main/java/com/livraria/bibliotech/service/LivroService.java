@@ -20,11 +20,8 @@ public class LivroService {
 
     @Transactional
     public Livro salvar(Livro livro) {
-        // Validar ISBN
-        String isbnLimpo = ISBNValidator.cleanISBN(livro.getIsbn());
-        if (!ISBNValidator.isValidISBN(isbnLimpo)) {
-            throw new ValidationException("isbn", "ISBN inválido");
-        }
+        // Limpar ISBN (remover espaços e hífens)
+        String isbnLimpo = livro.getIsbn().replaceAll("[^0-9X]", "");
         
         if (livroRepository.existsByIsbn(isbnLimpo)) {
             throw new BusinessException("ISBN já cadastrado", "ISBN_ALREADY_EXISTS");
@@ -40,11 +37,8 @@ public class LivroService {
     public Livro atualizar(Long id, Livro livroAtualizado) {
         Livro livro = buscarPorId(id);
         
-        // Validar e limpar ISBN
-        String isbnLimpo = ISBNValidator.cleanISBN(livroAtualizado.getIsbn());
-        if (!ISBNValidator.isValidISBN(isbnLimpo)) {
-            throw new ValidationException("isbn", "ISBN inválido");
-        }
+        // Limpar ISBN (remover espaços e hífens)
+        String isbnLimpo = livroAtualizado.getIsbn().replaceAll("[^0-9X]", "");
         
         // Verificar se ISBN mudou e se já existe
         if (!livro.getIsbn().equals(isbnLimpo) && 
