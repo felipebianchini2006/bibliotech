@@ -141,15 +141,15 @@
                                     <td><strong>${emprestimo.livro.titulo}</strong></td>
                                     <td>${emprestimo.livro.isbn}</td>
                                     <td>
-                                        <fmt:formatDate value="${emprestimo.dataEmprestimo}"/>
+                                        <fmt:formatDateTime value="${emprestimo.dataEmprestimo}"/>
                                     </td>
                                     <td>
-                                        <fmt:formatDate value="${emprestimo.dataPrevistaDevolucao}"/>
+                                        <fmt:formatDateTime value="${emprestimo.dataPrevistaDevolucao}"/>
                                     </td>
                                     <td>
                                         <c:choose>
                                             <c:when test="${not empty emprestimo.dataDevolucao}">
-                                                <fmt:formatDate value="${emprestimo.dataDevolucao}"/>
+                                                <fmt:formatDateTime value="${emprestimo.dataDevolucao}"/>
                                             </c:when>
                                             <c:otherwise>
                                                 <span style="color: #999;">-</span>

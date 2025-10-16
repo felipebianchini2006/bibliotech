@@ -298,10 +298,10 @@
                                 <td>#${emprestimo.id}</td>
                                 <td>${emprestimo.livro.titulo}</td>
                                 <td>
-                                    <fmt:formatDate value="${emprestimo.dataEmprestimo}"/>
+                                    <fmt:formatDateTime value="${emprestimo.dataEmprestimo}"/>
                                 </td>
                                 <td>
-                                    <fmt:formatDate value="${emprestimo.dataPrevistaDevolucao}"/>
+                                    <fmt:formatDateTime value="${emprestimo.dataPrevistaDevolucao}"/>
                                 </td>
                                 <td>
                                     <c:choose>
