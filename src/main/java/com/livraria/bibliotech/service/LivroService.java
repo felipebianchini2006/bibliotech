@@ -2,39 +2,82 @@ package com.livraria.bibliotech.service;
 
 import com.livraria.bibliotech.exception.BusinessException;
 import com.livraria.bibliotech.exception.ResourceNotFoundException;
-import com.livraria.bibliotech.exception.ValidationException;
+import com.livraria.bibliotech.model.Autor;
+import com.livraria.bibliotech.model.Categoria;
 import com.livraria.bibliotech.model.Livro;
+import com.livraria.bibliotech.repository.AutorRepository;
+import com.livraria.bibliotech.repository.CategoriaRepository;
 import com.livraria.bibliotech.repository.LivroRepository;
-import com.livraria.bibliotech.validator.ISBNValidator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LivroService {
 
     private final LivroRepository livroRepository;
+    private final AutorRepository autorRepository;
+    private final CategoriaRepository categoriaRepository;
 
     @Transactional
     public Livro salvar(Livro livro) {
+        log.info("Salvando livro - ISBN: {}", livro.getIsbn());
+        
         // Limpar ISBN (remover espaços e hífens)
         String isbnLimpo = livro.getIsbn().replaceAll("[^0-9X]", "");
         
         if (livroRepository.existsByIsbn(isbnLimpo)) {
+            log.warn("Tentativa de salvar livro com ISBN duplicado: {}", isbnLimpo);
             throw new BusinessException("ISBN já cadastrado", "ISBN_ALREADY_EXISTS");
         }
         
         // Limpar e armazenar ISBN sem formatação
         livro.setIsbn(isbnLimpo);
         
-        return livroRepository.save(livro);
+        // Validar quantidade disponível
+        if (livro.getQuantidadeDisponivel() > livro.getQuantidadeTotal()) {
+            throw new BusinessException("Quantidade disponível não pode ser maior que quantidade total", "QUANTIDADE_INVALIDA");
+        }
+        
+        // Buscar categoria do banco
+        if (livro.getCategoria() != null && livro.getCategoria().getId() != null) {
+            Categoria categoria = categoriaRepository.findById(livro.getCategoria().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria", livro.getCategoria().getId()));
+            livro.setCategoria(categoria);
+            log.debug("Categoria atribuída: {}", categoria.getNome());
+        }
+        
+        // Buscar autores do banco antes de salvar
+        if (livro.getAutores() != null && !livro.getAutores().isEmpty()) {
+            Set<Autor> autoresPersistidos = new HashSet<>();
+            for (Autor autor : livro.getAutores()) {
+                if (autor.getId() != null) {
+                    Autor autorPersistido = autorRepository.findById(autor.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Autor", autor.getId()));
+                    autoresPersistidos.add(autorPersistido);
+                    log.debug("Autor adicionado: {} (ID: {})", autorPersistido.getNome(), autorPersistido.getId());
+                }
+            }
+            livro.setAutores(autoresPersistidos);
+            log.info("Total de autores vinculados: {}", autoresPersistidos.size());
+        }
+        
+        Livro livroSalvo = livroRepository.save(livro);
+        log.info("Livro salvo com sucesso - ID: {}, ISBN: {}", livroSalvo.getId(), livroSalvo.getIsbn());
+        return livroSalvo;
     }
 
     @Transactional
     public Livro atualizar(Long id, Livro livroAtualizado) {
+        log.info("Atualizando livro - ID: {}", id);
+        
         Livro livro = buscarPorId(id);
         
         // Limpar ISBN (remover espaços e hífens)
@@ -43,7 +86,13 @@ public class LivroService {
         // Verificar se ISBN mudou e se já existe
         if (!livro.getIsbn().equals(isbnLimpo) && 
             livroRepository.existsByIsbn(isbnLimpo)) {
+            log.warn("Tentativa de atualizar livro com ISBN duplicado: {}", isbnLimpo);
             throw new BusinessException("ISBN já cadastrado", "ISBN_ALREADY_EXISTS");
+        }
+        
+        // Validar quantidade disponível
+        if (livroAtualizado.getQuantidadeDisponivel() > livroAtualizado.getQuantidadeTotal()) {
+            throw new BusinessException("Quantidade disponível não pode ser maior que quantidade total", "QUANTIDADE_INVALIDA");
         }
 
         livro.setTitulo(livroAtualizado.getTitulo());
@@ -53,10 +102,36 @@ public class LivroService {
         livro.setQuantidadeTotal(livroAtualizado.getQuantidadeTotal());
         livro.setQuantidadeDisponivel(livroAtualizado.getQuantidadeDisponivel());
         livro.setImagemUrl(livroAtualizado.getImagemUrl());
-        livro.setCategoria(livroAtualizado.getCategoria());
-        livro.setAutores(livroAtualizado.getAutores());
+        
+        // Buscar categoria do banco
+        if (livroAtualizado.getCategoria() != null && livroAtualizado.getCategoria().getId() != null) {
+            Categoria categoria = categoriaRepository.findById(livroAtualizado.getCategoria().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria", livroAtualizado.getCategoria().getId()));
+            livro.setCategoria(categoria);
+            log.debug("Categoria atualizada: {}", categoria.getNome());
+        }
+        
+        // Buscar autores do banco antes de atualizar
+        if (livroAtualizado.getAutores() != null && !livroAtualizado.getAutores().isEmpty()) {
+            Set<Autor> autoresPersistidos = new HashSet<>();
+            for (Autor autor : livroAtualizado.getAutores()) {
+                if (autor.getId() != null) {
+                    Autor autorPersistido = autorRepository.findById(autor.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Autor", autor.getId()));
+                    autoresPersistidos.add(autorPersistido);
+                    log.debug("Autor atualizado: {} (ID: {})", autorPersistido.getNome(), autorPersistido.getId());
+                }
+            }
+            livro.setAutores(autoresPersistidos);
+            log.info("Total de autores atualizados: {}", autoresPersistidos.size());
+        } else {
+            livro.setAutores(new HashSet<>());
+            log.info("Autores removidos do livro");
+        }
 
-        return livroRepository.save(livro);
+        Livro livroSalvo = livroRepository.save(livro);
+        log.info("Livro atualizado com sucesso - ID: {}, ISBN: {}", livroSalvo.getId(), livroSalvo.getIsbn());
+        return livroSalvo;
     }
 
     @Transactional
