@@ -34,6 +34,7 @@ public class Livro {
     @Column(nullable = false)
     private String titulo;
 
+    @ValidISBN(message = "ISBN inválido. Use formato ISBN-10 ou ISBN-13")
     @NotBlank(message = "ISBN é obrigatório")
     @Column(unique = true, nullable = false, length = 13)
     private String isbn;
