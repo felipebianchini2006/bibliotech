@@ -37,6 +37,15 @@ public interface LivroRepository extends JpaRepository<Livro, Long> {
     @Query("SELECT l FROM Livro l WHERE LOWER(l.categoria.nome) LIKE LOWER(CONCAT('%', :nomeCategoria, '%'))")
     List<Livro> findByCategoriaNome(@Param("nomeCategoria") String nomeCategoria);
 
+    // Buscar livros por termo (título, autor ou categoria)
+    @Query("SELECT DISTINCT l FROM Livro l " +
+           "LEFT JOIN l.autores a " +
+           "LEFT JOIN l.categoria c " +
+           "WHERE LOWER(l.titulo) LIKE LOWER(CONCAT('%', :termo, '%')) " +
+           "OR LOWER(a.nome) LIKE LOWER(CONCAT('%', :termo, '%')) " +
+           "OR LOWER(c.nome) LIKE LOWER(CONCAT('%', :termo, '%'))")
+    List<Livro> findByTermo(@Param("termo") String termo);
+
     // Verificar se ISBN já existe
     boolean existsByIsbn(String isbn);
     

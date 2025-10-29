@@ -176,6 +176,28 @@ public class LivroService {
         return livroRepository.findByTituloContainingIgnoreCase(titulo);
     }
 
+    /**
+     * Busca livros por termo genérico.
+     * Busca em título, nome do autor e nome da categoria.
+     * Retorna lista sem duplicatas.
+     * 
+     * @param termo Termo de busca
+     * @return Lista de livros que correspondem ao termo
+     */
+    public List<Livro> buscarPorTermo(String termo) {
+        log.info("Buscando livros por termo: {}", termo);
+        
+        if (termo == null || termo.trim().isEmpty()) {
+            log.debug("Termo vazio, retornando todos os livros");
+            return listarTodos();
+        }
+        
+        List<Livro> resultados = livroRepository.findByTermo(termo.trim());
+        log.info("Encontrados {} livros para o termo '{}'", resultados.size(), termo);
+        
+        return resultados;
+    }
+
     public List<Livro> buscarPorCategoria(Long categoriaId) {
         return livroRepository.findByCategoriaId(categoriaId);
     }

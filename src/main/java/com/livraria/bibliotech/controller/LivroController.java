@@ -145,13 +145,13 @@ public class LivroController {
     }
 
     @GetMapping("/buscar")
-    public String buscar(@RequestParam(required = false) String titulo, Model model) {
-        if (titulo != null && !titulo.isEmpty()) {
-            model.addAttribute("livros", livroService.buscarPorTitulo(titulo));
+    public String buscar(@RequestParam(required = false) String termo, Model model) {
+        if (termo != null && !termo.isEmpty()) {
+            model.addAttribute("livros", livroService.buscarPorTermo(termo));
         } else {
             model.addAttribute("livros", livroService.listarTodos());
         }
-        model.addAttribute("termoBusca", titulo);
+        model.addAttribute("termoBusca", termo);
         return "livros/lista";
     }
 }
