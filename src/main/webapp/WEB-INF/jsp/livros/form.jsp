@@ -51,6 +51,40 @@
         }
         textarea { resize: vertical; font-family: inherit; }
         small { color: #999; font-size: 12px; }
+        
+        /* Checkbox Group */
+        .checkbox-group {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #fafafa;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .checkbox-item:hover {
+            background: #f0f0f0;
+        }
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+            font-weight: 400;
+            color: #333;
+        }
+        
         .form-actions {
             display: flex;
             justify-content: space-between;
@@ -147,18 +181,28 @@
                 </div>
 
                 <div class="col-12">
-                    <label for="autores">Autores</label>
-                    <select id="autores" name="autores" multiple size="4">
+                    <label>Autores</label>
+                    <div class="checkbox-group">
                         <c:forEach items="${autores}" var="autor">
-                            <option value="${autor.id}"
-                                <c:if test="${livro.autores != null}">
-                                    <c:forEach items="${livro.autores}" var="livroAutor">
-                                        <c:if test="${livroAutor.id == autor.id}">selected</c:if>
-                                    </c:forEach>
-                                </c:if>>${autor.nome}</option>
+                            <div class="checkbox-item">
+                                <input type="checkbox" 
+                                       name="autoresIds" 
+                                       value="${autor.id}" 
+                                       id="autor_${autor.id}"
+                                       <c:if test="${livro.autores != null}">
+                                           <c:forEach items="${livro.autores}" var="livroAutor">
+                                               <c:if test="${livroAutor.id == autor.id}">checked</c:if>
+                                           </c:forEach>
+                                       </c:if>>
+                                <label for="autor_${autor.id}">${autor.nome}</label>
+                            </div>
                         </c:forEach>
-                    </select>
-                    <small>Ctrl + clique para múltiplos</small>
+                    </div>
+                    <c:if test="${empty autores}">
+                        <small style="color: #999;">Nenhum autor cadastrado. 
+                            <a href="${pageContext.request.contextPath}/autores/novo" style="color: #333;">Cadastrar autor</a>
+                        </small>
+                    </c:if>
                 </div>
 
                 <div class="col-12">

@@ -1,5 +1,6 @@
 package com.livraria.bibliotech.controller;
 
+import com.livraria.bibliotech.model.Autor;
 import com.livraria.bibliotech.model.Livro;
 import com.livraria.bibliotech.service.AutorService;
 import com.livraria.bibliotech.service.CategoriaService;
@@ -12,6 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/livros")
@@ -39,7 +43,8 @@ public class LivroController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public String salvar(@Valid @ModelAttribute Livro livro, 
+    public String salvar(@Valid @ModelAttribute Livro livro,
+                        @RequestParam(value = "autoresIds", required = false) Long[] autoresIds,
                         BindingResult result, 
                         Model model,
                         RedirectAttributes redirectAttributes) {
@@ -50,6 +55,17 @@ public class LivroController {
         }
 
         try {
+            // Converter IDs de autores em objetos Autor
+            if (autoresIds != null && autoresIds.length > 0) {
+                Set<Autor> autores = new HashSet<>();
+                for (Long autorId : autoresIds) {
+                    Autor autor = new Autor();
+                    autor.setId(autorId);
+                    autores.add(autor);
+                }
+                livro.setAutores(autores);
+            }
+            
             livroService.salvar(livro);
             redirectAttributes.addFlashAttribute("mensagem", "Livro cadastrado com sucesso!");
             return "redirect:/livros";
@@ -80,6 +96,7 @@ public class LivroController {
     @PreAuthorize("hasRole('ADMIN')")
     public String atualizar(@PathVariable Long id,
                            @Valid @ModelAttribute Livro livro,
+                           @RequestParam(value = "autoresIds", required = false) Long[] autoresIds,
                            BindingResult result,
                            Model model,
                            RedirectAttributes redirectAttributes) {
@@ -90,6 +107,20 @@ public class LivroController {
         }
 
         try {
+            // Converter IDs de autores em objetos Autor
+            if (autoresIds != null && autoresIds.length > 0) {
+                Set<Autor> autores = new HashSet<>();
+                for (Long autorId : autoresIds) {
+                    Autor autor = new Autor();
+                    autor.setId(autorId);
+                    autores.add(autor);
+                }
+                livro.setAutores(autores);
+            } else {
+                // Se nenhum autor foi selecionado, limpar autores
+                livro.setAutores(new HashSet<>());
+            }
+            
             livroService.atualizar(id, livro);
             redirectAttributes.addFlashAttribute("mensagem", "Livro atualizado com sucesso!");
             return "redirect:/livros";
