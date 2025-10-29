@@ -170,7 +170,7 @@
                     <div class="info-row">
                         <div class="info-label">Publicação</div>
                         <div class="info-value">
-                            <tags:formatDate value="${livro.dataPublicacao}"/>
+                            ${com.livraria.bibliotech.util.DateFormatter.formatDate(livro.dataPublicacao)}
                         </div>
                     </div>
 

@@ -298,10 +298,10 @@
                                 <td>#${emprestimo.id}</td>
                                 <td>${emprestimo.livro.titulo}</td>
                                 <td>
-                                    <fmt:formatDateTime value="${emprestimo.dataEmprestimo}"/>
+                                    ${com.livraria.bibliotech.util.DateFormatter.formatDateTime(emprestimo.dataEmprestimo)}
                                 </td>
                                 <td>
-                                    <fmt:formatDateTime value="${emprestimo.dataPrevistaDevolucao}"/>
+                                    ${com.livraria.bibliotech.util.DateFormatter.formatDateTime(emprestimo.dataPrevistaDevolucao)}
                                 </td>
                                 <td>
                                     <c:choose>

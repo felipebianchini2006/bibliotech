@@ -188,14 +188,14 @@
                 <div class="info-item">
                     <div class="info-label">Data do Empréstimo</div>
                     <div class="info-value">
-                        <fmtDate:formatDateTime value="${emprestimo.dataEmprestimo}"/>
+                        ${com.livraria.bibliotech.util.DateFormatter.formatDateTime(emprestimo.dataEmprestimo)}
                     </div>
                 </div>
 
                 <div class="info-item">
                     <div class="info-label">Previsão de Devolução</div>
                     <div class="info-value">
-                        <fmtDate:formatDateTime value="${emprestimo.dataPrevistaDevolucao}"/>
+                        ${com.livraria.bibliotech.util.DateFormatter.formatDateTime(emprestimo.dataPrevistaDevolucao)}
                     </div>
                 </div>
 
@@ -203,7 +203,7 @@
                     <div class="info-item">
                         <div class="info-label">Data da Devolução</div>
                         <div class="info-value">
-                            <fmtDate:formatDateTime value="${emprestimo.dataDevolucao}"/>
+                            ${com.livraria.bibliotech.util.DateFormatter.formatDateTime(emprestimo.dataDevolucao)}
                         </div>
                     </div>
                 </c:if>

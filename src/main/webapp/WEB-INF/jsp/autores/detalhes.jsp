@@ -242,7 +242,7 @@
                     <c:if test="${not empty autor.dataNascimento}">
                         <div class="meta-item">
                             <span class="meta-icon">📅</span>
-                            <span>Nascido em <fmt:formatDate value="${autor.dataNascimento}"/></span>
+                            <span>Nascido em ${com.livraria.bibliotech.util.DateFormatter.formatDate(autor.dataNascimento)}</span>
                         </div>
                     </c:if>
 
@@ -309,7 +309,7 @@
                                 <div class="livro-titulo">${livro.titulo}</div>
                                 <div class="livro-info">
                                     ISBN: ${livro.isbn}<br>
-                                    Publicado: <fmt:formatDate value="${livro.dataPublicacao}"/>
+                                    Publicado: ${com.livraria.bibliotech.util.DateFormatter.formatDate(livro.dataPublicacao)}
                                 </div>
                                 <c:if test="${not empty livro.categoria}">
                                     <span class="livro-categoria">${livro.categoria.nome}</span>

@@ -251,7 +251,7 @@
                                     <td>
                                         <c:choose>
                                             <c:when test="${not empty autor.dataNascimento}">
-                                                <fmt:formatDate value="${autor.dataNascimento}"/>
+                                                ${com.livraria.bibliotech.util.DateFormatter.formatDate(autor.dataNascimento)}
                                             </c:when>
                                             <c:otherwise>-</c:otherwise>
                                         </c:choose>
