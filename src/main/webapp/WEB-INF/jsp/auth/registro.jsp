@@ -80,7 +80,7 @@
                 </div>
                 <div class="col-6">
                     <label for="cpf">CPF *</label>
-                    <input type="text" id="cpf" name="cpf" maxlength="11" pattern="[0-9]{11}" required>
+                    <input type="text" id="cpf" name="cpf" maxlength="14" placeholder="000.000.000-00" required>
                 </div>
             </div>
 
@@ -111,5 +111,17 @@
             <a href="${pageContext.request.contextPath}/login" class="link">← Voltar para Login</a>
         </div>
     </div>
+
+    <script>
+    document.getElementById('cpf').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length <= 11) {
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        }
+        e.target.value = value;
+    });
+    </script>
 </body>
 </html>
