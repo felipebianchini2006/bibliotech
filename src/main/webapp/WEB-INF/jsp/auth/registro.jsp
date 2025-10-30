@@ -58,6 +58,24 @@
         .divider { text-align: center; margin: 20px 0; color: #999; font-size: 13px; }
         .link { color: #333; text-decoration: none; font-size: 14px; }
         .link:hover { text-decoration: underline; }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .alert-error { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb; 
+        }
+        .alert-success { 
+            background: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb; 
+        }
     </style>
 </head>
 <body>
@@ -66,6 +84,14 @@
             <h2>📚 Bibliotech</h2>
             <p>Criar nova conta</p>
         </div>
+
+        <c:if test="${not empty erro}">
+            <div class="alert alert-error">${erro}</div>
+        </c:if>
+
+        <c:if test="${not empty mensagem}">
+            <div class="alert alert-success">${mensagem}</div>
+        </c:if>
 
         <form action="${pageContext.request.contextPath}/registro" method="post">
             <div class="col-12">

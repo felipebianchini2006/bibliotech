@@ -69,7 +69,7 @@ public class LivroController {
             livroService.salvar(livro);
             redirectAttributes.addFlashAttribute("mensagem", "Livro cadastrado com sucesso!");
             return "redirect:/livros";
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | com.livraria.bibliotech.exception.BusinessException e) {
             model.addAttribute("erro", e.getMessage());
             model.addAttribute("categorias", categoriaService.listarTodas());
             model.addAttribute("autores", autorService.listarTodos());
@@ -124,7 +124,7 @@ public class LivroController {
             livroService.atualizar(id, livro);
             redirectAttributes.addFlashAttribute("mensagem", "Livro atualizado com sucesso!");
             return "redirect:/livros";
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | com.livraria.bibliotech.exception.BusinessException e) {
             model.addAttribute("erro", e.getMessage());
             model.addAttribute("categorias", categoriaService.listarTodas());
             model.addAttribute("autores", autorService.listarTodos());

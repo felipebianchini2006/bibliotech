@@ -110,6 +110,23 @@
             cursor: pointer;
         }
         .btn-primary:hover { background: #000; }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .alert-error { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb; 
+        }
+        .alert-success { 
+            background: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb; 
+        }
     </style>
 </head>
 <body>
@@ -121,6 +138,14 @@
 
     <div class="container">
         <h2>${livro.id != null ? 'Editar' : 'Novo'} Livro</h2>
+
+        <c:if test="${not empty erro}">
+            <div class="alert alert-error">${erro}</div>
+        </c:if>
+
+        <c:if test="${not empty mensagem}">
+            <div class="alert alert-success">${mensagem}</div>
+        </c:if>
 
         <div class="card">
             <form action="${livro.id != null ? pageContext.request.contextPath.concat('/livros/').concat(livro.id) : pageContext.request.contextPath.concat('/livros')}" method="post">

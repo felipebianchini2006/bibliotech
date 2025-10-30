@@ -62,7 +62,7 @@ public class AuthController {
             usuarioService.cadastrar(usuario);
             redirectAttributes.addFlashAttribute("mensagem", "Cadastro realizado com sucesso! Faça login.");
             return "redirect:/login";
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | com.livraria.bibliotech.exception.BusinessException e) {
             redirectAttributes.addFlashAttribute("erro", e.getMessage());
             return "redirect:/registro";
         }
