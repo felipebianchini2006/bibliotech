@@ -1,67 +1,57 @@
-# Bibliotech - Sistema de Gerenciamento de Biblioteca
+# Bibliotech
 
-Sistema web para gerenciamento de biblioteca com controle de empréstimos, usuários, livros, autores e categorias.
+Sistema de gerenciamento de biblioteca com controle de empréstimos.
 
-## Tecnologias
+## Stack
 
-- Java 21
-- Spring Boot 3.5.6
-- PostgreSQL
-- Spring Security
-- Spring Data JPA
-- JSP + JSTL
-- Lombok
+Java 21 | Spring Boot 3.5.6 | Spring Security | PostgreSQL 16 | JSP + JSTL | Lombok
 
 ## Instalação
 
-1. Instalar Java 21 e PostgreSQL
-2. Criar banco de dados:
-```sql
-CREATE DATABASE livraria_db;
-```
-
-3. Configurar credenciais em `src/main/resources/application.properties`
-
-4. Executar:
 ```bash
-mvnw.cmd spring-boot:run    # Windows
-./mvnw spring-boot:run      # Linux/Mac
+# 1. Criar banco
+CREATE DATABASE livraria_db;
+
+# 2. Configurar application.properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/livraria_db
+spring.datasource.username=seu_usuario
+spring.datasource.password=sua_senha
+
+# 3. Executar
+./mvnw spring-boot:run  # Linux/Mac
+mvnw.cmd spring-boot:run  # Windows
+
+# 4. Acessar
+http://localhost:8080
 ```
 
-5. Acessar: http://localhost:8080
+## Credenciais
 
-## Credenciais Padrão
-
-**Administrador:**
-- Email: admin@bibliotech.com
-- Senha: admin123
-
-**Usuário:**
-- Email: joao@email.com
-- Senha: user123
+**Admin:** admin@bibliotech.com / admin123  
+**User:** joao@email.com / user123
 
 ## Funcionalidades
 
-- Autenticação e autorização com Spring Security
-- CRUD de Livros, Autores e Categorias
-- Sistema de Empréstimos com controle de estoque
+- CRUD de livros, autores e categorias
+- Sistema de empréstimos com controle de estoque
+- Validação de ISBN (10/13 dígitos) e CPF
+- Busca multi-campo (título, autor, categoria)
 - Cálculo automático de multas (R$ 2,00/dia)
 - Renovação de empréstimos (14 dias)
-- Limite de 5 empréstimos simultâneos por usuário
-- Administração de usuários
-- Histórico de empréstimos
-- Busca e filtros
+- Limite de 5 empréstimos por usuário
+- Autenticação e autorização (BCrypt + CSRF)
 
 ## Estrutura
 
 ```
 src/main/java/com/livraria/bibliotech/
-├── config/          Configurações
+├── config/          Security, JPA, DataInitializer
 ├── controller/      Controllers MVC
 ├── model/           Entidades JPA
-├── repository/      Repositories
+├── repository/      Spring Data JPA
 ├── service/         Lógica de negócio
-└── BibliotechApplication.java
+├── exception/       GlobalExceptionHandler
+└── validator/       ISBN, CPF
 
 src/main/webapp/WEB-INF/jsp/
 ├── auth/            Login e registro
@@ -72,27 +62,20 @@ src/main/webapp/WEB-INF/jsp/
 └── usuarios/        Admin de usuários
 ```
 
-## Configuração do Banco
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/livraria_db
-spring.datasource.username=postgres
-spring.datasource.password=123456
-```
-
 ## Regras de Negócio
 
-- Prazo padrão de empréstimo: 14 dias
-- Multa por atraso: R$ 2,00 por dia
-- Limite de empréstimos por usuário: 5
-- Renovações ilimitadas (se não estiver atrasado)
+- Prazo: 14 dias | Multa: R$ 2,00/dia | Limite: 5 empréstimos/usuário
+- Status: ATIVO, DEVOLVIDO, ATRASADO, CANCELADO
+- Estoque: decrementa no empréstimo, incrementa na devolução
 
-## Troubleshooting
+## Comandos
 
-**Erro de conexão com banco:**
-- Verificar se PostgreSQL está rodando
-- Confirmar credenciais em application.properties
-- Verificar se o banco livraria_db existe
+```bash
+./mvnw clean package     # Compilar
+./mvnw test              # Testar
+./mvnw spring-boot:run   # Executar
+```
 
-**Erro 500 em datas:**
-- Corrigido: JSPs usam JSTL functions para formatar LocalDateTime
+## Licença
+
+MIT - Ver [LICENSE](LICENSE)
